@@ -11,28 +11,29 @@ const app = express();
 
 const PORT = process.env.PORT || 5000;
 
-
 // ================================
 // MIDDLEWARE
 // ================================
 
-// Allow React frontend
+// Allow local React frontend and deployed Vercel frontend
 app.use(
     cors({
-        origin: "http://localhost:5173"
+        origin: [
+            "http://localhost:5173",
+            "https://product-inventory-management-two.vercel.app"
+        ],
+        credentials: true
     })
 );
 
 // Read JSON request bodies
 app.use(express.json());
 
-
 // ================================
 // CONNECT TO MONGODB
 // ================================
 
 connectDB();
-
 
 // ================================
 // ROUTES
@@ -45,15 +46,10 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const supplierRoutes = require("./routes/supplierRoutes");
 
 app.use("/api/products", productRoutes);
-
 app.use("/api/inventory", inventoryRoutes);
-
 app.use("/api/auth", authRoutes);
-
 app.use("/api/categories", categoryRoutes);
-
 app.use("/api/suppliers", supplierRoutes);
-
 
 // ================================
 // HOME ROUTE
@@ -62,7 +58,6 @@ app.use("/api/suppliers", supplierRoutes);
 app.get("/", (req, res) => {
     res.send("Product Inventory Management API is running");
 });
-
 
 // ================================
 // 404 ROUTE
@@ -73,7 +68,6 @@ app.use((req, res) => {
         message: "Route not found"
     });
 });
-
 
 // ================================
 // START SERVER
