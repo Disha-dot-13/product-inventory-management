@@ -1,12 +1,11 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:5000/api",
+    baseURL: import.meta.env.VITE_API_URL,
     headers: {
         "Content-Type": "application/json"
     }
 });
-
 
 // =========================
 // REQUEST INTERCEPTOR
@@ -14,14 +13,10 @@ const api = axios.create({
 
 api.interceptors.request.use(
     (config) => {
-
-        const token =
-            localStorage.getItem("token");
+        const token = localStorage.getItem("token");
 
         if (token) {
-
-            config.headers.Authorization =
-                `Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${token}`;
         }
 
         return config;
@@ -31,7 +26,6 @@ api.interceptors.request.use(
         return Promise.reject(error);
     }
 );
-
 
 // =========================
 // RESPONSE INTERCEPTOR
@@ -49,7 +43,6 @@ api.interceptors.response.use(
             error.response &&
             error.response.status === 401
         ) {
-
             localStorage.removeItem("token");
             localStorage.removeItem("user");
 
@@ -59,6 +52,5 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
-
 
 export default api;
